@@ -30,9 +30,7 @@ class FileViewer5000(QWidget):
         self.show()
 
     def onButtonClick(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        directory = QFileDialog.getExistingDirectory(self, "Select Directory", options=options)
+        directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         if directory:
             print(f"Selected Directory: {directory}")
             only_images = self.checkbox.isChecked()
