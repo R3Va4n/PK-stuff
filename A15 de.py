@@ -12,10 +12,10 @@ def calculate_digit_proportion(file_path) -> float:
             number_digits += 1
         total_characters += 1
 
-    if number_digits == 0:
-        number_digits = 1
+    if total_characters == 0:
+        total_characters = 1
 
-    return total_characters/number_digits
+    return number_digits/total_characters
 
 def reduce_empty_lines(file_path):
     file_text = open(file_path, "r").read()
