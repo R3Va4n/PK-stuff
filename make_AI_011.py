@@ -1,3 +1,6 @@
+import io
+import random
+
 import numpy as np
 import tensorflow as tf
 import keras
@@ -5,25 +8,25 @@ from keras import layers
 
 # Model / data parameters
 num_classes = 3
-input_shape = (256, 256, 3)
-batch_size = 64
-epochs = 50
+input_shape = (128, 128, 3)
+batch_size = 32
+epochs = 500
 
 # Load the data and split it between train and test sets
 train_dataset = keras.utils.image_dataset_from_directory(
-    directory='C:/temp/pk/images/used-in-split/train',
+    directory='images/128x128/train',
     labels='inferred',
     label_mode='categorical',
     batch_size=batch_size,
-    image_size=(256, 256)
+    image_size=(input_shape[0], input_shape[1])
 )
 
 test_dataset = keras.utils.image_dataset_from_directory(
-    directory='C:/temp/pk/images/used-in-split/test',
+    directory='images/128x128/test',
     labels='inferred',
     label_mode='categorical',
     batch_size=batch_size,
-    image_size=(256, 256)
+    image_size=(input_shape[0], input_shape[1])
 )
 
 # Data normalization
@@ -35,7 +38,8 @@ test_dataset = test_dataset.map(lambda x, y: (normalization_layer(x), y))
 data_augmentation = keras.Sequential([
     layers.RandomFlip("horizontal_and_vertical"),
     layers.RandomRotation(0.2),
-    layers.RandomZoom(0.2)
+    layers.RandomZoom(0.2),
+    layers.RandomTranslation(height_factor=0.2, width_factor=0.2)
 ])
 train_dataset = train_dataset.map(lambda x, y: (data_augmentation(x, training=True), y))
 
@@ -62,8 +66,8 @@ model.summary()
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 callbacks = [
-    keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True),
-    keras.callbacks.ReduceLROnPlateau(factor=0.1, patience=5)
+    keras.callbacks.EarlyStopping(patience=30, restore_best_weights=True),
+    keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=10)
 ]
 
 history = model.fit(train_dataset, validation_data=test_dataset, epochs=epochs, callbacks=callbacks)
@@ -71,3 +75,7 @@ history = model.fit(train_dataset, validation_data=test_dataset, epochs=epochs, 
 score = model.evaluate(test_dataset)
 print("Test loss:", score[0])
 print("Test accuracy:", score[1])
+
+my_number = random.randint(0, 9999999)
+model.save(f"test-{my_number}.keras")
+print(f"saved as \"test-{my_number}.keras\" ")
