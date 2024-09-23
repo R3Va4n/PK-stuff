@@ -91,5 +91,5 @@ print("Test loss:", score[0])
 print("Test accuracy:", score[1])
 
 my_number = random.randint(0, 9999999)
-model.save(f"test-{my_number}.keras")
-print(f"saved as \"test-{my_number}.keras\" ")
+model.save(f"test-{my_number}.h5")
+print(f"saved as \"test-{my_number}.h5\" ")
