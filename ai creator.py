@@ -18,6 +18,7 @@ epochs = 500
 augmentation_strength = 0.25  # 0.5 #1 #2
 train_dataset_path = 'images/128x128/train'
 test_dataset_path = 'images/128x128/test'
+activation_function = 'swish'
 
 # Load the data and split it between train and test sets
 train_dataset = keras.utils.image_dataset_from_directory(
@@ -64,23 +65,23 @@ test_dataset = test_dataset.prefetch(buffer_size=AUTOTUNE)
 # Model architecture
 model = keras.Sequential([
     keras.Input(shape=input_shape),
-    layers.Conv2D(32, 3, activation='relu'),
+    layers.Conv2D(32, 3, activation=activation_function),
     layers.BatchNormalization(),
-    layers.Conv2D(32, 3, activation='relu'),
-    layers.BatchNormalization(),
-    layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Conv2D(64, 3, activation='relu'),
-    layers.BatchNormalization(),
-    layers.Conv2D(64, 3, activation='relu'),
+    layers.Conv2D(32, 3, activation=activation_function),
     layers.BatchNormalization(),
     layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Conv2D(128, 3, activation='relu'),
+    layers.Conv2D(64, 3, activation=activation_function),
     layers.BatchNormalization(),
-    layers.Conv2D(128, 3, activation='relu'),
+    layers.Conv2D(64, 3, activation=activation_function),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(pool_size=(2, 2)),
+    layers.Conv2D(128, 3, activation=activation_function),
+    layers.BatchNormalization(),
+    layers.Conv2D(128, 3, activation=activation_function),
     layers.BatchNormalization(),
     layers.MaxPooling2D(pool_size=(2, 2)),
     layers.Flatten(),
-    layers.Dense(128, activation='relu'),
+    layers.Dense(128, activation=activation_function),
     layers.Dropout(0.5),
     layers.Dense(num_classes, activation='softmax'),
 ])
