@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 num_classes = 3
 input_shape = (128, 128, 3)
 batch_size = 32
-epochs = 500
+epochs = 25
 augmentation_strength = 0.25  # 0.5 #1 #2
 train_dataset_path = 'images/128x128/train'
 test_dataset_path = 'images/128x128/test'
@@ -91,7 +91,6 @@ model.summary()
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 callbacks = [
-    keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True),
     keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=7),
 ]
 
