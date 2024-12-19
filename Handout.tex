@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage[ngerman]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Nuki}
+\author{Falko Rogner, Konstantin Terbeck}
+
+\begin{document}
+\maketitle
+\section{Bedienungsanleitung}
+
+\subsection{Mindestanforderungen}
+
+In folgender Umgebung läuft das Programm garantiert:
+\begin{itemize}
+  \item Eine Vollständige Installation, also
+  \begin{itemize}
+      \item nuki.py
+      \item Pk-test.keras
+  \end{itemize}
+  \item Eine Python Umgebung mit 
+  \begin{itemize}
+      \item Python 3.12.7
+      \item PyQt 5.15.10
+      \item Numpy 1.26.4
+      \item Tensorflow 2.17.0
+  \end{itemize}
+\end{itemize}
+
+\subsection{Startbildschirm}
+Wenn Sie das Programm ausführen, werden Sie den Startbildschirm sehen.
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{startscreen.png}
+\end{figure}
+Dieser zeigt Titel und den Highscore an. Sie können im Dropdown-Menü die Sprache auf Deutsch wechseln. Drücken Sie auf den Knopf [Spiel Starten], um anzufangen.
+
+\subsection{Spielbildschirme}
+Ihnen wird nun eine kleine Geschichte in drei Kapiteln erzählt. Am Ende jedes Kapitels ist ein Knopf, der Sie zu einem Dateidialog führt. Wie durch die Geschichte gut zu erkennen ist, muss zuerst ein Bild eines Meerschweinchens, dann das Bild eines Graupapageien und zuletzt das eines Kampfflugzeugs eingelesen werden.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\linewidth]{Screen1.png}
+\includegraphics[width=0.5\linewidth]{Screen2.png}
+\includegraphics[width=0.5\linewidth]{Screen3.png}
+\caption{Die 3 Spielbildschirme}
+\end{figure}
+
+\subsection{Nicht akzeptierte Bilder}
+Sollte das Bild nicht vom Programm erkannt werden, entweder weil das Bild nicht den Anforderungen entspricht oder weil das neuronale Netz einen Fehler macht, wird auf Deutsch die Nachricht "Nuki blinzelte: Er musste sich verschaut haben angezeigt. Dies bedeutet, dass Sie ein anderes Bild auswählen müssen.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\linewidth]{Not accepted.png}
+\end{figure}
+
+\subsection{Endbildschirm}
+Wenn das Spiel zu Ende ist, landen Sie im Endbildschirm. Hier können Sie sehen, wie viele Punkte Sie für jedes Bild erreicht haben und den derzeitigen Highscore. Mit dem Knopf [Zurück zum Start] gelangen Sie wieder in den Startbildschirm.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=1\linewidth]{End_screen.png}
+\end{figure}
+
+\newpage
+\section{Erfahrungen beim Modellieren}
+
+\subsection{Grafikkarten}
+TensorFlow nutzt automatisch die Grafikkarte, um ein Modell zu trainieren. TensorFlow unterstützt die Nutzung einer Grafikkarte, \href{https://www.tensorflow.org/install/pip#windows-native}{allerdings nicht in Windows.}
+
+\subsection{Datenset}
+Unserer Erfahrung nach sind die Trainingsdaten deutlich entscheidender als alle anderen Entscheidungen. So sind einfache Probleme wie MNIST mit einem sehr einfachen CNN mit nur wenig Training problemlos mit hoher Genauigkeit zu lösen. Weiterhin ist das Unterscheiden zwischen zwei Klassen deutlich einfacher als von drei oder mehr. Bei mir war die Klasse Kampfflugzeuge sehr schwierig, da dort verschiedenfarbige Flugzeuge aller Arten und sogar Hubschrauber vertreten waren.
+
+\subsection{Image Augmentation}
+Da mein Datenset für das Modell bereits sehr schwierig war, hatte das Verändern der Bilder bei mir einen negativen Effekt.
+
+\subsection{Aktivierungsfunktion}
+Für die Aktivierungsfunktion (auf Englisch activation function) wird heutzutage anstatt der Sigmoid-Funktion meist die deutlich einfachere ReLU genutzt. Wir haben jedoch mit der Swish-Funktion bessere Ergebnisse erzielen können.
+
+\subsection{Dropout Layers}
+Ohne Dropout-Layers funktioniert gar nichts. Sie führen dazu, dass das gesamte Netz lernt, wodurch dieses viel akkurater wird.
+
+\subsection{Batch Normalization}
+Obwohl es in der Theorie sinnvoll klingt, hatte das Einführen bei mir keinen oder einen kleinen negativen Effekt.
+
+\subsection{Strides vs. MaxPooling}
+Sowohl das Einführen von Strides als auch MaxPooling verringern die Breite eines CNNs, jedoch hat MaxPooling mit einer Pool-Größe von 2 weit bessere Ergebnisse als Strides erzielt.
+
+\subsection{Early Stopping}
+Dass das Modell aufhört, wenn die Genauigkeit nicht mehr steigt, hat sich bei mir als überaus hilfreich erwiesen, da das Modell dann so lange trainiert werden konnte, ohne dass man "Auswendiglernen" bzw. Overfitting befürchten muss.
+
+\subsection{Reduce Learn Rate on Plateau}
+Ebenfalls sehr hilfreich, da damit das Modell am Ende genauer das Minimum der Lossfunktion erreichen kann.
+
+\end{document}
